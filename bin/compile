@@ -19,7 +19,7 @@ echo "cache  directory at $CACHE_FILE"
 
 VENDOR_HOME_PATH="$HOME/vendor"
 
-if [ ! -f $CACHE_FILE ]; then
+# if [ ! -f $CACHE_FILE ]; then
   # install MuTools
   MU_TOOLS_FILE="mupdf-1.16.1-source.tar.gz"
   MU_TOOLS_DIR="mupdf-1.16.1-source"
@@ -46,16 +46,15 @@ if [ ! -f $CACHE_FILE ]; then
   rm -rf $MU_TOOLS_DIR
 
   # cache for future deploys
-  echo "-----> Caching MuTools installation"
+  echo "-----> Moving MuTools to correct path"
   cd $VENDOR_DIR
   REL_INSTALL_DIR="MuTools"
-  tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
-  mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
+  mv $REL_INSTALL_DIR $VENDOR_HOME_PATH
 
-fi
+# fi
 # cache exists, extract it
-echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_HOME_PATH"
-tar xzf $CACHE_FILE -C $VENDOR_HOME_PATH
+# echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_HOME_PATH"
+# tar xzf $CACHE_FILE -C $VENDOR_HOME_PATH
 
 echo "-----> Writing policy file"
 mkdir -p $INSTALL_DIR/etc/MuTools
