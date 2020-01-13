@@ -14,7 +14,7 @@ INSTALL_DIR="$VENDOR_DIR/MuTools"
 mkdir -p $INSTALL_DIR
 CACHE_FILE="$CACHE_DIR/1.16.1.tar.gz"
 
-# if [ ! -f $CACHE_FILE ]; then
+if [ ! -f $CACHE_FILE ]; then
   # install MuTools
   MU_TOOLS_FILE="mupdf-1.16.1-source.tar.gz"
   MU_TOOLS_DIR="mupdf-1.16.1-source"
@@ -47,11 +47,11 @@ CACHE_FILE="$CACHE_DIR/1.16.1.tar.gz"
   tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
   mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
 
-# else
-#   # cache exists, extract it
-#   echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_DIR"
-#   tar xzf $CACHE_FILE -C $VENDOR_DIR
-# fi
+else
+  # cache exists, extract it
+  echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_DIR"
+  tar xzf $CACHE_FILE -C $VENDOR_DIR
+fi
 
 echo "-----> Writing policy file"
 mkdir -p $INSTALL_DIR/etc/MuTools
