@@ -1,0 +1,89 @@
+#!/bin/bash
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install MuTools"
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+VENDOR_DIR="$BUILD_DIR/vendor"
+mkdir -p $VENDOR_DIR
+INSTALL_DIR="$VENDOR_DIR/MuTools"
+mkdir -p $INSTALL_DIR
+CACHE_FILE="$CACHE_DIR/1.16.1.tar.gz"
+
+if [ ! -f $CACHE_FILE ]; then
+  # install MuTools
+  MU_TOOLS_FILE="1.16.1.tar.xz"
+  MU_TOOLS_DIR="1.16.1"
+  # SSL cert used on MuTools not recognized by heroku.
+  MU_TOOLS_URL="https://github.com/ArtifexSoftware/mupdf/archive/1.16.1.tar.gz"
+
+  echo "-----> Downloading MuTools from $MU_TOOLS_URL"
+  wget $MU_TOOLS_URL -P $BUILD_DIR | indent
+
+  echo "-----> Extracting MuTools from $BUILD_DIR/$MU_TOOLS_FILE"
+  if [ ! -f $BUILD_DIR/$MU_TOOLS_FILE ]; then
+    echo "Error: Unable to download MuTools" | indent
+    ls $BUILD_DIR | indent
+    exit 1;
+  fi
+  tar xvf $BUILD_DIR/$MU_TOOLS_FILE | indent
+
+  echo "-----> Building MuTools"
+  cd $MU_TOOLS_DIR
+  export CPPFLAGS="-I$INSTALL_DIR/include"
+  export LDFLAGS="-L$INSTALL_DIR/lib"
+  ./configure --prefix=$INSTALL_DIR --without-gvc
+  make HAVE_X11=no HAVE_GLUT=no prefix=/usr/local install
+  cd ..
+  rm -rf $MU_TOOLS_DIR
+
+  # cache for future deploys
+  echo "-----> Caching MuTools installation"
+  cd $VENDOR_DIR
+  REL_INSTALL_DIR="MuTools"
+  tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
+  mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
+
+else
+  # cache exists, extract it
+  echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_DIR"
+  tar xzf $CACHE_FILE -C $VENDOR_DIR
+fi
+
+echo "-----> Writing policy file"
+mkdir -p $INSTALL_DIR/etc/MuTools
+cat > $INSTALL_DIR/policy.xml <<EOF
+<policymap>
+  <policy domain="coder" rights="none" pattern="EPHEMERAL" />
+  <policy domain="coder" rights="none" pattern="HTTPS" />
+  <policy domain="coder" rights="none" pattern="MVG" />
+  <policy domain="coder" rights="none" pattern="MSL" />
+</policymap>
+EOF
+
+# update PATH and LD_LIBRARY_PATH
+echo "-----> Updating environment variables"
+PROFILE_PATH="$BUILD_DIR/.profile.d/MuTools.sh"
+ACTUAL_INSTALL_PATH="$HOME/vendor/MuTools"
+mkdir -p $(dirname $PROFILE_PATH)
+echo "export PATH=$ACTUAL_INSTALL_PATH/bin:\$PATH" >> $PROFILE_PATH
+echo "export LD_LIBRARY_PATH=$ACTUAL_INSTALL_PATH/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
+
+# DOWNLOAD_URL="http://www.MuTools.org/download/MuTools-6.9.2-0.tar.gz"
+
+# echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+# cd $BUILD_DIR
+# mkdir -p $VENDOR_DIR
+# cd $VENDOR_DIR
+# curl -L --silent $DOWNLOAD_URL | tar xz
+
+# echo "exporting PATH and LIBRARY_PATH" | indent
+# PROFILE_PATH="$BUILD_DIR/.profile.d/MuTools.sh"
+# mkdir -p $(dirname $PROFILE_PATH)
+# echo 'export PATH="$PATH:$HOME/vendor/MuTools-6.9.2/bin"' >> $PROFILE_PATH
+# echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/vendor/MuTools-6.9.2/lib"' >> $PROFILE_PATH
