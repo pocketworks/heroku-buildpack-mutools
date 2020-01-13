@@ -14,7 +14,10 @@ mkdir -p $VENDOR_DIR
 INSTALL_DIR="$VENDOR_DIR/MuTools"
 mkdir -p $INSTALL_DIR
 echo "Creating installation  directory at $INSTALL_DIR"
-CACHE_FILE="$CACHE_DIR/mutools-1.16.1.tar.gz"
+CACHE_FILE="$CACHE_DIR/mutools-build-1.16.1.tar.gz"
+echo "cache  directory at $CACHE_FILE"
+
+VENDOR_HOME_PATH="$HOME/vendor"
 
 if [ ! -f $CACHE_FILE ]; then
   # install MuTools
@@ -49,11 +52,10 @@ if [ ! -f $CACHE_FILE ]; then
   tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
   mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
 
-else
-  # cache exists, extract it
-  echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_DIR"
-  tar xzf $CACHE_FILE -C $VENDOR_DIR
 fi
+# cache exists, extract it
+echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_HOME_PATH"
+tar xzf $CACHE_FILE -C $VENDOR_HOME_PATH
 
 echo "-----> Writing policy file"
 mkdir -p $INSTALL_DIR/etc/MuTools
@@ -70,6 +72,7 @@ EOF
 echo "-----> Updating environment variables"
 PROFILE_PATH="$BUILD_DIR/.profile.d/MuTools.sh"
 ACTUAL_INSTALL_PATH="$HOME/vendor/MuTools"
+
 mkdir -p $(dirname $PROFILE_PATH)
 echo "export PATH=$ACTUAL_INSTALL_PATH/bin:\$PATH" >> $PROFILE_PATH
 echo "export LD_LIBRARY_PATH=$ACTUAL_INSTALL_PATH/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
