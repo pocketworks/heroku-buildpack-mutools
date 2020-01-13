@@ -39,31 +39,16 @@ VENDOR_HOME_PATH="$HOME/vendor"
 
   echo "-----> Building MuTools"
   cd $MU_TOOLS_DIR
-  export CPPFLAGS="-I$INSTALL_DIR/include"
-  export LDFLAGS="-L$INSTALL_DIR/lib"
   make HAVE_X11=no HAVE_GLUT=no prefix=$INSTALL_DIR install
-  cd ..
-  rm -rf $MU_TOOLS_DIR
+  # rm -rf $MU_TOOLS_DIR
 
-  # cache for future deploys
-  echo "-----> Moving MuTools build from $INSTALL_DIR to $VENDOR_HOME_PATH"
-  mv $INSTALL_DIR $VENDOR_HOME_PATH
 
 # fi
 # cache exists, extract it
 # echo "-----> Extracting MuTools $CACHE_FILE => $VENDOR_HOME_PATH"
 # tar xzf $CACHE_FILE -C $VENDOR_HOME_PATH
 
-# echo "-----> Writing policy file"
-# mkdir -p $INSTALL_DIR/etc/MuTools
-# cat > $INSTALL_DIR/policy.xml <<EOF
-# <policymap>
-#   <policy domain="coder" rights="none" pattern="EPHEMERAL" />
-#   <policy domain="coder" rights="none" pattern="HTTPS" />
-#   <policy domain="coder" rights="none" pattern="MVG" />
-#   <policy domain="coder" rights="none" pattern="MSL" />
-# </policymap>
-# EOF
+
 
 # update PATH and LD_LIBRARY_PATH
 echo "-----> Updating environment variables"
