@@ -16,6 +16,7 @@ mkdir -p $INSTALL_DIR
 echo "Creating installation  directory at $INSTALL_DIR"
 CACHE_FILE="$CACHE_DIR/mutools-build-1.16.1.tar.gz"
 echo "cache  directory at $CACHE_FILE"
+TEMP_BUILD_DIR="$BUILD_DIR/tmp/builds/MuTools"
 
 VENDOR_HOME_PATH="$HOME/vendor"
 
@@ -40,7 +41,14 @@ VENDOR_HOME_PATH="$HOME/vendor"
   echo "-----> Building MuTools"
   cd $MU_TOOLS_DIR
   make HAVE_X11=no HAVE_GLUT=no prefix=$INSTALL_DIR install
-  # rm -rf $MU_TOOLS_DIR
+  mkdir -p $TEMP_BUILD_DIR
+  echo "Moving $INSTALL_DIR/bin" "$TEMP_BUILD_DIR/"
+  echo "Moving $INSTALL_DIR/lib" "$TEMP_BUILD_DIR/"
+  mv "$INSTALL_DIR/bin" "$TEMP_BUILD_DIR/"
+  mv "$INSTALL_DIR/lib" "$TEMP_BUILD_DIR/"
+  rm -rf $MU_TOOLS_DIR
+  rm -rf $INSTALL_DIR
+  mv $TEMP_BUILD_DIR $VENDOR_DIR
 
 
 # fi
