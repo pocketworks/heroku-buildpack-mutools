@@ -16,7 +16,7 @@ CACHE_FILE="$CACHE_DIR/1.16.1.tar.gz"
 
 # if [ ! -f $CACHE_FILE ]; then
   # install MuTools
-  MU_TOOLS_FILE="1.16.1.tar.gz"
+  MU_TOOLS_FILE="mupdf-1.16.1-source.tar.gz"
   MU_TOOLS_DIR="mupdf-1.16.1-source"
   # SSL cert used on MuTools not recognized by heroku.
   MU_TOOLS_URL="https://www.mupdf.com/downloads/archive/mupdf-1.16.1-source.tar.gz"
