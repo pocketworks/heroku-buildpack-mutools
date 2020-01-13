@@ -9,10 +9,12 @@ echo "-----> Install MuTools"
 BUILD_DIR=$1
 CACHE_DIR=$2
 VENDOR_DIR="$BUILD_DIR/vendor"
+echo "Creating vendor directory at $VENDOR_DIR"
 mkdir -p $VENDOR_DIR
 INSTALL_DIR="$VENDOR_DIR/MuTools"
 mkdir -p $INSTALL_DIR
-CACHE_FILE="$CACHE_DIR/1.16.1.tar.gz"
+echo "Creating installation  directory at $INSTALL_DIR"
+CACHE_FILE="$CACHE_DIR/mutools-1.16.1.tar.gz"
 
 if [ ! -f $CACHE_FILE ]; then
   # install MuTools
